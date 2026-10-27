@@ -159,13 +159,19 @@ def to_records(db: dict) -> list[Inscription]:
 
     records: list[Inscription] = []
     for sealid, glyphs in sequences.items():
-        n_breaks = sum(1 for g in glyphs if g == "0")
         signs_stored = [g for g in glyphs if g != "0"]
         if not signs_stored:
             continue
         # Dump stores reverse reading order; reverse to reading order.
         signs = [f"IW:{g}" for g in reversed(signs_stored)]
-        n_lines = n_breaks + 1
+        # Split on line-break marker "0"; n_lines = non-empty segments.
+        segments: list[list[str]] = [[]]
+        for g in glyphs:
+            if g == "0":
+                segments.append([])
+            else:
+                segments[-1].append(g)
+        n_lines = sum(1 for seg in segments if seg)
 
         seal = seals.get(sealid, {})
         siteid = seal.get("SITEID", "")

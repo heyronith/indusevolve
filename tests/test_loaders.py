@@ -25,12 +25,14 @@ INSERT INTO GLYPH (GLYPHID, UNICODE) VALUES
 INSERT INTO SEAL (SEALID, SITEID, MATERIAL, CISI, MUSEUM, WIDTH, HEIGHT, THICKNESS) VALUES
 (1, "SI1", "Steatite", "T-1", NULL, 1.0, 1.0, 1.0),
 (2, "SI1", "Clay", "T-2", NULL, 1.0, 1.0, 1.0),
-(3, "SI1", "Clay", "T-3", NULL, 1.0, 1.0, 1.0);
+(3, "SI1", "Clay", "T-3", NULL, 1.0, 1.0, 1.0),
+(4, "SI1", "Clay", "T-4", NULL, 1.0, 1.0, 1.0);
 
 INSERT INTO INSCRIPTION (SEALID, ISCOMPLETE, DIRECTION) VALUES
 (1, "Y", "R/L"),
 (2, "Y", "R/L"),
-(3, "N", "R/L");
+(3, "N", "R/L"),
+(4, "Y", "R/L");
 
 INSERT INTO ICONOGRAPHY(SEALID, DESCRIPTION) VALUES
 (1, "Bull");
@@ -38,7 +40,8 @@ INSERT INTO ICONOGRAPHY(SEALID, DESCRIPTION) VALUES
 INSERT INTO GLYPHSEQUENCE (SEALID, GLYPHID, IDX) VALUES
 (1,740,0), (1,17,1), (1,5,2),
 (2,740,0), (2,0,1), (2,17,2),
-(3,0,0);
+(3,0,0),
+(4,0,0), (4,5,1), (4,0,2), (4,0,3), (4,7,4), (4,0,5);
 """
 
 
@@ -57,10 +60,18 @@ class TestLoaders(unittest.TestCase):
             db = parse(path)
             records = to_records(db)
             by_id = {r.id: r for r in records}
-            self.assertEqual(set(by_id), {"IW-1", "IW-2"})
+            self.assertNotIn("IW-3", by_id)
             self.assertEqual(by_id["IW-1"].signs, ["IW:5", "IW:17", "IW:740"])
             self.assertEqual(by_id["IW-2"].meta["n_lines"], 2)
             self.assertEqual(by_id["IW-2"].signs, ["IW:17", "IW:740"])
+
+    def test_n_lines_ignores_leading_trailing_and_double_breaks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "population-script.sql"
+            path.write_text(MINI_SQL, encoding="utf-8")
+            records = {r.id: r for r in to_records(parse(path))}
+            self.assertEqual(records["IW-4"].meta["n_lines"], 2)
+            self.assertEqual(records["IW-4"].signs, ["IW:7", "IW:5"])
 
     def test_cisi_mayig_reverses_graphemes(self):
         with tempfile.TemporaryDirectory() as tmp:
