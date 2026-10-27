@@ -14,7 +14,9 @@ IndusEvolve is a pre-registered study using LLM-guided evolutionary program sear
 ## Running tests
 
 ```
-python3 -m unittest discover -s tests -v
+brew install python@3.12
+python3.12 -m venv .venv
+.venv/bin/python -m unittest discover -s tests -v
 ```
 
 ## Workflow

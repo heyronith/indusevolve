@@ -1,0 +1,314 @@
+{
+  "overlapping": 161,
+  "agreeing": 137,
+  "agree_pct": 85,
+  "disagreements": [
+    {
+      "cisi_id": "CISI-M-4A",
+      "iw_id": "IW-2533",
+      "cisi_source_id": "M-4A",
+      "iw_source_id": "M-4",
+      "length_cisi": 10,
+      "length_iw": 9,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": []
+    },
+    {
+      "cisi_id": "CISI-M-7A",
+      "iw_id": "IW-2536",
+      "cisi_source_id": "M-7A",
+      "iw_source_id": "M-7",
+      "length_cisi": 11,
+      "length_iw": 9,
+      "jar_positions_cisi": [
+        7
+      ],
+      "jar_positions_iw": [
+        5
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-10A",
+      "iw_id": "IW-2539",
+      "cisi_source_id": "M-10A",
+      "iw_source_id": "M-10",
+      "length_cisi": 10,
+      "length_iw": 11,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": []
+    },
+    {
+      "cisi_id": "CISI-M-20A",
+      "iw_id": "IW-2548",
+      "cisi_source_id": "M-20A",
+      "iw_source_id": "M-20",
+      "length_cisi": 8,
+      "length_iw": 7,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": []
+    },
+    {
+      "cisi_id": "CISI-M-23A",
+      "iw_id": "IW-2551",
+      "cisi_source_id": "M-23A",
+      "iw_source_id": "M-23",
+      "length_cisi": 13,
+      "length_iw": 13,
+      "jar_positions_cisi": [
+        12
+      ],
+      "jar_positions_iw": [
+        8
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-25A",
+      "iw_id": "IW-2553",
+      "cisi_source_id": "M-25A",
+      "iw_source_id": "M-25",
+      "length_cisi": 5,
+      "length_iw": 4,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": []
+    },
+    {
+      "cisi_id": "CISI-M-41A",
+      "iw_id": "IW-2569",
+      "cisi_source_id": "M-41A",
+      "iw_source_id": "M-41",
+      "length_cisi": 8,
+      "length_iw": 9,
+      "jar_positions_cisi": [
+        7
+      ],
+      "jar_positions_iw": [
+        8
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-51A",
+      "iw_id": "IW-2579",
+      "cisi_source_id": "M-51A",
+      "iw_source_id": "M-51",
+      "length_cisi": 8,
+      "length_iw": 8,
+      "jar_positions_cisi": [
+        2,
+        7
+      ],
+      "jar_positions_iw": [
+        7
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-67A",
+      "iw_id": "IW-2595",
+      "cisi_source_id": "M-67A",
+      "iw_source_id": "M-67",
+      "length_cisi": 7,
+      "length_iw": 7,
+      "jar_positions_cisi": [
+        6
+      ],
+      "jar_positions_iw": [
+        5
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-68A",
+      "iw_id": "IW-2596",
+      "cisi_source_id": "M-68A",
+      "iw_source_id": "M-68",
+      "length_cisi": 8,
+      "length_iw": 8,
+      "jar_positions_cisi": [
+        6
+      ],
+      "jar_positions_iw": [
+        4
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-72A",
+      "iw_id": "IW-2600",
+      "cisi_source_id": "M-72A",
+      "iw_source_id": "M-72",
+      "length_cisi": 6,
+      "length_iw": 7,
+      "jar_positions_cisi": [
+        5
+      ],
+      "jar_positions_iw": [
+        6
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-73A",
+      "iw_id": "IW-2601",
+      "cisi_source_id": "M-73A",
+      "iw_source_id": "M-73",
+      "length_cisi": 4,
+      "length_iw": 3,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": []
+    },
+    {
+      "cisi_id": "CISI-M-79A",
+      "iw_id": "IW-2606",
+      "cisi_source_id": "M-79A",
+      "iw_source_id": "M-79",
+      "length_cisi": 7,
+      "length_iw": 7,
+      "jar_positions_cisi": [
+        6
+      ],
+      "jar_positions_iw": [
+        5
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-81A",
+      "iw_id": "IW-2608",
+      "cisi_source_id": "M-81A",
+      "iw_source_id": "M-81",
+      "length_cisi": 7,
+      "length_iw": 6,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": []
+    },
+    {
+      "cisi_id": "CISI-M-98A",
+      "iw_id": "IW-2625",
+      "cisi_source_id": "M-98A",
+      "iw_source_id": "M-98",
+      "length_cisi": 3,
+      "length_iw": 4,
+      "jar_positions_cisi": [
+        2
+      ],
+      "jar_positions_iw": [
+        3
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-111A",
+      "iw_id": "IW-2638",
+      "cisi_source_id": "M-111A",
+      "iw_source_id": "M-111",
+      "length_cisi": 7,
+      "length_iw": 6,
+      "jar_positions_cisi": [
+        6
+      ],
+      "jar_positions_iw": [
+        5
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-120A",
+      "iw_id": "IW-2647",
+      "cisi_source_id": "M-120A",
+      "iw_source_id": "M-120",
+      "length_cisi": 6,
+      "length_iw": 7,
+      "jar_positions_cisi": [
+        5
+      ],
+      "jar_positions_iw": [
+        5
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-126A",
+      "iw_id": "IW-2653",
+      "cisi_source_id": "M-126A",
+      "iw_source_id": "M-126",
+      "length_cisi": 5,
+      "length_iw": 4,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": []
+    },
+    {
+      "cisi_id": "CISI-M-127A",
+      "iw_id": "IW-2654",
+      "cisi_source_id": "M-127A",
+      "iw_source_id": "M-127",
+      "length_cisi": 5,
+      "length_iw": 5,
+      "jar_positions_cisi": [
+        1,
+        3
+      ],
+      "jar_positions_iw": [
+        3
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-128A",
+      "iw_id": "IW-2655",
+      "cisi_source_id": "M-128A",
+      "iw_source_id": "M-128",
+      "length_cisi": 6,
+      "length_iw": 6,
+      "jar_positions_cisi": [
+        2,
+        5
+      ],
+      "jar_positions_iw": [
+        5
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-161A",
+      "iw_id": "IW-2687",
+      "cisi_source_id": "M-161A",
+      "iw_source_id": "M-161",
+      "length_cisi": 4,
+      "length_iw": 3,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": []
+    },
+    {
+      "cisi_id": "CISI-M-162A",
+      "iw_id": "IW-2688",
+      "cisi_source_id": "M-162A",
+      "iw_source_id": "M-162",
+      "length_cisi": 6,
+      "length_iw": 5,
+      "jar_positions_cisi": [
+        5
+      ],
+      "jar_positions_iw": [
+        4
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-165A",
+      "iw_id": "IW-2212",
+      "cisi_source_id": "M-165A",
+      "iw_source_id": "M-165",
+      "length_cisi": 9,
+      "length_iw": 9,
+      "jar_positions_cisi": [
+        1,
+        8
+      ],
+      "jar_positions_iw": [
+        5,
+        7
+      ]
+    },
+    {
+      "cisi_id": "CISI-M-176A",
+      "iw_id": "IW-2701",
+      "cisi_source_id": "M-176A",
+      "iw_source_id": "M-176",
+      "length_cisi": 2,
+      "length_iw": 2,
+      "jar_positions_cisi": [],
+      "jar_positions_iw": [
+        1
+      ]
+    }
+  ]
+}
