@@ -5,13 +5,33 @@ import csv
 import random
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 HEADER_RE = re.compile(r"^&P(\d+)\s*=\s*(.*)$")
+APOSTROPHE_MAP = str.maketrans({
+    "\u2019": "'",  # ’
+    "\u2018": "'",  # ‘
+    "\u02BC": "'",  # ʼ
+    "\u00B4": "'",  # ´
+    "`": "'",
+})
 
 
-def norm(s: str) -> str:
+def norm_exact(s: str) -> str:
+    """Whitespace-normalised, case-insensitive (original T04 compare)."""
     return " ".join((s or "").casefold().split())
+
+
+def norm_amended(s: str) -> str:
+    """PI amendment normalisation for designation comparison."""
+    s = unicodedata.normalize("NFKC", s or "")
+    s = s.translate(APOSTROPHE_MAP)
+    s = re.sub(r"\s+", " ", s)
+    s = re.sub(r"\s+([,;:)])", r"\1", s)
+    s = re.sub(r"\(\s+", "(", s)
+    s = re.sub(r"\b0+(\d)", r"\1", s)
+    return s.casefold().strip()
 
 
 def parse_atf_designations(atf_path: Path) -> dict[str, str]:
@@ -44,7 +64,6 @@ def evaluate(sample, atf_map, column: str):
             continue
         cat_des = row.get("designation") or ""
         atf_des = atf_map[p]
-        equal = norm(cat_des) == norm(atf_des)
         matched.append(
             {
                 "id": row.get("id", ""),
@@ -52,12 +71,16 @@ def evaluate(sample, atf_map, column: str):
                 "p": p,
                 "catalogue": cat_des,
                 "atf": atf_des,
-                "equal": equal,
+                "equal_exact": norm_exact(cat_des) == norm_exact(atf_des),
+                "equal_norm": norm_amended(cat_des) == norm_amended(atf_des),
             }
         )
-    agree = sum(1 for m in matched if m["equal"])
-    share = (agree / len(matched)) if matched else 0.0
-    return matched, agree, share
+    n = len(matched)
+    agree_exact = sum(1 for m in matched if m["equal_exact"])
+    agree_norm = sum(1 for m in matched if m["equal_norm"])
+    share_exact = (agree_exact / n) if n else 0.0
+    share_norm = (agree_norm / n) if n else 0.0
+    return matched, agree_exact, share_exact, agree_norm, share_norm
 
 
 def main(argv: list[str]) -> None:
@@ -88,20 +111,27 @@ def main(argv: list[str]) -> None:
 
     results = {}
     for col in ("id_text", "id"):
-        matched, agree, share = evaluate(sample, atf_map, col)
-        results[col] = (matched, agree, share)
+        matched, ae, se, an, sn = evaluate(sample, atf_map, col)
+        results[col] = (matched, ae, se, an, sn)
         print(
-            f"{col}: matched={len(matched)} agree={agree} share={share:.4f}",
+            f"{col}: matched={len(matched)} "
+            f"exact={ae}/{len(matched)} ({se:.4f}) "
+            f"normalised={an}/{len(matched)} ({sn:.4f})",
             flush=True,
         )
 
-    # Prefer id_text if both qualify.
+    id_text_matched, _, _, id_text_agree_n, id_text_share_n = results["id_text"]
+    id_matched, _, _, id_agree_n, id_share_n = results["id"]
+
+    # Decision: id_text wins if normalised ≥ 0.95 on ≥ 100 matched,
+    # AND id stays below 0.05 (normalised).
     winner = None
-    for col in ("id_text", "id"):
-        matched, agree, share = results[col]
-        if len(matched) >= 100 and share >= 0.95:
-            winner = col
-            break
+    if (
+        len(id_text_matched) >= 100
+        and id_text_share_n >= 0.95
+        and id_share_n < 0.05
+    ):
+        winner = "id_text"
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     lines: list[str] = []
@@ -111,44 +141,71 @@ def main(argv: list[str]) -> None:
     w(f"ATF P-number headers indexed: {len(atf_map)}")
     w(f"Sample size: {len(sample)} (seed 0, non-empty designation)")
     w("")
+    w("## PI amendment to Part A normalisation")
+    w("")
+    w(
+        "In addition to the original exact compare (whitespace-normalised, "
+        "case-insensitive), designations are also compared after: Unicode NFKC; "
+        "mapping ’ ‘ ʼ ´ ` to '; collapsing whitespace; removing spaces before "
+        "`, ; : )` and after `(`; stripping leading zeros from digit runs "
+        r"(`re.sub(r'\b0+(\d)', r'\1', s)`); casefold."
+    )
+    w("")
     for col in ("id_text", "id"):
-        matched, agree, share = results[col]
+        matched, ae, se, an, sn = results[col]
         w(f"## Convention `{col}`")
         w("")
         w(f"- Matched (candidate P in ATF): **{len(matched)}**")
-        w(f"- Designation agreement: **{agree}/{len(matched)}** "
-          f"({share:.4f})")
+        w(f"- Exact agreement: **{ae}/{len(matched)}** ({se:.4f})")
+        w(f"- Normalised agreement: **{an}/{len(matched)}** ({sn:.4f})")
         w("")
-        w("10 example rows:")
+        w("10 example rows (exact / normalised):")
         w("")
-        w("| catalogue designation | ATF designation | equal? |")
-        w("| --- | --- | --- |")
+        w("| catalogue designation | ATF designation | exact? | normalised? |")
+        w("| --- | --- | --- | --- |")
         for m in matched[:10]:
             cat = m["catalogue"].replace("|", "\\|")
             atf = m["atf"].replace("|", "\\|")
-            w(f"| {cat} | {atf} | {m['equal']} |")
+            w(
+                f"| {cat} | {atf} | {m['equal_exact']} | {m['equal_norm']} |"
+            )
         w("")
 
+    mismatches = [m for m in id_text_matched if not m["equal_norm"]]
+    w("## Remaining `id_text` mismatches after normalisation")
+    w("")
+    w(f"Count: **{len(mismatches)}**")
+    w("")
+    w("| catalogue designation | ATF designation |")
+    w("| --- | --- |")
+    for m in mismatches:
+        cat = m["catalogue"].replace("|", "\\|")
+        atf = m["atf"].replace("|", "\\|")
+        w(f"| {cat} | {atf} |")
+    w("")
+
+    w("## Decision")
+    w("")
     if winner:
-        w(f"## Decision")
-        w("")
-        w(f"**Winning convention: `{winner}`** "
-          f"(agreement ≥ 0.95 on ≥ 100 matched rows).")
+        w(
+            f"**Winning convention: `{winner}`** "
+            f"(normalised agreement ≥ 0.95 on ≥ 100 matched rows, "
+            f"and `id` normalised share < 0.05)."
+        )
         w("")
         print(f"ID CONVENTION: {winner}", flush=True)
     else:
-        w("## Decision")
-        w("")
-        w("Neither convention reached agreement ≥ 0.95 on ≥ 100 matched rows. "
-          "STOP after Part A.")
+        w(
+            "Decision rule not met "
+            "(need `id_text` normalised ≥ 0.95 on ≥ 100 matched, "
+            "and `id` normalised < 0.05). STOP after Part A."
+        )
         w("")
         print("ID CONVENTION: none (stop after Part A)", flush=True)
-        for col in ("id_text", "id"):
-            _, _, share = results[col]
-            print(f"  {col} agreement share: {share:.4f}", flush=True)
 
     out_path.write_text("\n".join(lines), encoding="utf-8")
     print(f"wrote {out_path}", flush=True)
+    print(f"id_text remaining mismatches: {len(mismatches)}", flush=True)
 
     if winner is None:
         sys.exit(2)
