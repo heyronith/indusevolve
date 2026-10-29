@@ -123,15 +123,20 @@ def main(argv: list[str]) -> None:
     id_text_matched, _, _, id_text_agree_n, id_text_share_n = results["id_text"]
     id_matched, _, _, id_agree_n, id_share_n = results["id"]
 
-    # Decision: id_text wins if normalised ≥ 0.95 on ≥ 100 matched,
+    # Formal rule: id_text wins if normalised ≥ 0.95 on ≥ 100 matched,
     # AND id stays below 0.05 (normalised).
-    winner = None
+    formal_winner = None
     if (
         len(id_text_matched) >= 100
         and id_text_share_n >= 0.95
         and id_share_n < 0.05
     ):
-        winner = "id_text"
+        formal_winner = "id_text"
+
+    # PI override (docs/data_notes/cdli_id_decision.md): id_text is the key
+    # after manual audit of the remaining mismatches.
+    winner = "id_text"
+    pi_override = formal_winner is None
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     lines: list[str] = []
@@ -186,29 +191,31 @@ def main(argv: list[str]) -> None:
 
     w("## Decision")
     w("")
-    if winner:
+    if formal_winner:
         w(
-            f"**Winning convention: `{winner}`** "
+            f"**Winning convention: `{formal_winner}`** "
             f"(normalised agreement ≥ 0.95 on ≥ 100 matched rows, "
             f"and `id` normalised share < 0.05)."
         )
-        w("")
-        print(f"ID CONVENTION: {winner}", flush=True)
     else:
         w(
-            "Decision rule not met "
-            "(need `id_text` normalised ≥ 0.95 on ≥ 100 matched, "
-            "and `id` normalised < 0.05). STOP after Part A."
+            "Formal 0.95 rule not met "
+            f"(`id_text` normalised={id_text_share_n:.4f}). "
+            "**PI override:** `id_text` is the CDLI object key — see "
+            "`docs/data_notes/cdli_id_decision.md`."
         )
-        w("")
-        print("ID CONVENTION: none (stop after Part A)", flush=True)
+    w("")
+    print(f"ID CONVENTION: {winner}", flush=True)
+    if pi_override:
+        print(
+            "  (PI override; formal 0.95 rule not met — "
+            "see docs/data_notes/cdli_id_decision.md)",
+            flush=True,
+        )
 
     out_path.write_text("\n".join(lines), encoding="utf-8")
     print(f"wrote {out_path}", flush=True)
     print(f"id_text remaining mismatches: {len(mismatches)}", flush=True)
-
-    if winner is None:
-        sys.exit(2)
 
 
 if __name__ == "__main__":

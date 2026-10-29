@@ -74,4 +74,4 @@ Count: **16**
 
 ## Decision
 
-Decision rule not met (need `id_text` normalised ≥ 0.95 on ≥ 100 matched, and `id` normalised < 0.05). STOP after Part A.
+Formal 0.95 rule not met (`id_text` normalised=0.9200). **PI override:** `id_text` is the CDLI object key — see `docs/data_notes/cdli_id_decision.md`.
